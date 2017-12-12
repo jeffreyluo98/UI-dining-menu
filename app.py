@@ -69,7 +69,10 @@ def makeYqlQuery(req):
 
 def makeWebhookResult(data):
 
-    speech = "Ikenberry is serving."
+    diningHall = "Ikenberry"
+    entrees = "Polenta with Roasted Vegetables , Macaroni & Cheeze"
+    
+    speech = diningHall + " is serving" + entrees
 
     print("Response:")
     print(speech)
@@ -79,7 +82,7 @@ def makeWebhookResult(data):
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+        "source": "ui-dining"
     }
 
 
