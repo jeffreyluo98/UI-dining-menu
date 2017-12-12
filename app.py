@@ -21,6 +21,7 @@ install_aliases()
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
+import re
 
 import json
 import os
@@ -52,27 +53,55 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "menuRequest":
         return {}
-    data = "a"
+    
+    
+    url = "http://housing.illinois.edu/Dining/Menus/Dining-Halls"
+    request = urllib.request.Request(url)
+    ret = []
+    retTxt = []
+    stri = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
+    response = urllib.request.urlopen(request)
+    data = response.read()
+    data = data.decode('utf-8')
+
+    pattern = re.compile(stri, re.DOTALL)
+    items = re.findall(pattern, data)
+    for item in items:
+        mealPeriod = item[0].lower()
+
+        dateArray = item[1].split('/')
+        date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
+        cat = item[2]
+        menu = " ".join(item[3].split())
+        ret.append([date, mealPeriod, cat, menu])
+    entrees = ''
+    for one in ret:
+        if one[1] == "lunch" and one[2] == "Entrees":
+            entrees += one[3] + ". "
+    data = entrees
     res = makeWebhookResult(data)
     return res
 
 
-def makeYqlQuery(req):
+def getParameters(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
-        return None
+    date = parameters.get("date")
+    diningHall = parameters.get("dining-hall")
+    mealPeriod = parameters.get("meal-period")
+    #if city is None:
+    #   return None
 
-    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+    return diningHall
 
 
 def makeWebhookResult(data):
 
     diningHall = "Ikenberry"
     entrees = "Polenta with Roasted Vegetables , Macaroni & Cheeze"
+    entrees = data
     
-    speech = diningHall + " is serving" + entrees
+    speech = diningHall + " is serving " + entrees
 
     print("Response:")
     print(speech)
