@@ -70,27 +70,30 @@ def processRequest(req):
         cat = item[2]
         menu = " ".join(item[3].split())
         ret.append([date, mealPeriod, cat, menu])
-    data = ""
+    entrees = ""
     for one in ret:
         if one[1] == "lunch" and one[2] == "Entrees":
-            data += one[3] + ". " 
+            entrees += one[3] + ". " 
+    
+    diningHall = getParameters(req)
+    
+    data = [diningHall, entrees]
     res = makeWebhookResult(data)
     return res
 
 
-def makeYqlQuery(req):
+def getParameters(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
-        return None
+    date = parameters.get("date")
+    diningHall = parameters.get("dining-hall")
+    mealPeriod = parameters.get("meal-period")
 
-    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+    return diningHall
 
 
 def makeWebhookResult(data):
-    location = "Ikenberry"
-    speech = location + " is serving " + data
+    speech = data[0] + " is serving " + data[1]
 
     print("Response:")
     print(speech)
