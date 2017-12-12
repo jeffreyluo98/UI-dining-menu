@@ -75,10 +75,10 @@ def processRequest(req):
         menu = " ".join(item[3].split())
         ret.append([date, mealPeriod, cat, menu])
 
-    data = ''
-    for one in ret:
-        if one[1] == "lunch" and one[2] == "Entrees":
-            data += one[3] + ". "
+    data = ""
+    #for one in ret:
+    #    if one[1] == "lunch" and one[2] == "Entrees":
+    #        data += one[3] + ". "
     res = makeWebhookResult(data)
     return res
 
