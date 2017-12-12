@@ -53,7 +53,27 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "menuRequest":
         return {}
-    data = "Food"
+    url = "http://housing.illinois.edu/Dining/Menus/Dining-Halls"
+    request = urllib.request.Request(url)
+    ret = []
+    retTxt = []
+    stri = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
+    response = urllib.request.urlopen(request)
+    webData = response.read()
+    webData = webData.decode('utf-8')
+    pattern = re.compile(stri, re.DOTALL)
+    items = re.findall(pattern, webData)
+    for item in items:
+        mealPeriod = item[0].lower()
+        dateArray = item[1].split('/')
+        date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
+        cat = item[2]
+        menu = " ".join(item[3].split())
+        ret.append([date, mealPeriod, cat, menu])
+    data = ""
+    for one in ret:
+        if one[1] == "lunch" and one[2] == "Entrees":
+            data += one[3] + ". " 
     res = makeWebhookResult(data)
     return res
 
