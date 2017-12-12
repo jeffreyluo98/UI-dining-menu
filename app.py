@@ -29,7 +29,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
-import datetime
+import urllib.request,re
+from datetime import datetime
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -53,13 +54,11 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "menuRequest":
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
     parameters = getParameters(req)
-    if parameters is None:
-        return {}
-    data = compileData()
+    #if parameters is None:
+    #    return {}
+    #data = compileData()
     
-    data = "a"
     res = makeWebhookResult(data)
     return res
 
@@ -99,15 +98,15 @@ def compileData():
     return ret
 
 def makeWebhookResult(data):
-    if data is None:
-        return {}
+    # if data is None:
+    #     return {}
     
     diningHall = "ikenberry"
     entrees = "Spinach Artichoke Pizza , Sausage Pizza , Three Cheese Pizza"
 
     # print(json.dumps(item, indent=4))
 
-    speech = diningHall + " is serving " + entrees
+    speech = diningHall + " is serving " + entrees + "."
 
     print("Response:")
     print(speech)
