@@ -61,11 +61,11 @@ def processRequest(req):
     retTxt = []
     stri = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
     response = urllib.request.urlopen(request)
-    data = response.read()
-    data = data.decode('utf-8')
+    webData = response.read()
+    webData = webData.decode('utf-8')
 
     pattern = re.compile(stri, re.DOTALL)
-    items = re.findall(pattern, data)
+    items = re.findall(pattern, webData)
     for item in items:
         mealPeriod = item[0].lower()
 
@@ -74,34 +74,33 @@ def processRequest(req):
         cat = item[2]
         menu = " ".join(item[3].split())
         ret.append([date, mealPeriod, cat, menu])
-    entrees = ''
+
+    data = ''
     for one in ret:
         if one[1] == "lunch" and one[2] == "Entrees":
-            entrees += one[3] + ". "
-    data = entrees
+            data += one[3] + ". "
     res = makeWebhookResult(data)
     return res
 
 
-def getParameters(req):
-    result = req.get("result")
-    parameters = result.get("parameters")
-    date = parameters.get("date")
-    diningHall = parameters.get("dining-hall")
-    mealPeriod = parameters.get("meal-period")
+#def getParameters(req):
+#    result = req.get("result")
+#    parameters = result.get("parameters")
+#    date = parameters.get("date")
+#    diningHall = parameters.get("dining-hall")
+#    mealPeriod = parameters.get("meal-period")
     #if city is None:
     #   return None
 
-    return diningHall
+#    return diningHall
 
 
 def makeWebhookResult(data):
 
     diningHall = "Ikenberry"
     entrees = "Polenta with Roasted Vegetables , Macaroni & Cheeze"
-    entrees = data
     
-    speech = diningHall + " is serving " + entrees
+    speech = diningHall + " is serving " + entrees + data
 
     print("Response:")
     print(speech)
