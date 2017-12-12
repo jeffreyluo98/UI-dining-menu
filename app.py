@@ -53,7 +53,8 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "menuRequest":
         return {}
-    
+    res = makeWebhookResult(data)
+    return res
     
     url = "http://housing.illinois.edu/Dining/Menus/Dining-Halls"
     request = urllib.request.Request(url)
@@ -79,8 +80,7 @@ def processRequest(req):
     #for one in ret:
     #    if one[1] == "lunch" and one[2] == "Entrees":
     #        data += one[3] + ". "
-    res = makeWebhookResult(data)
-    return res
+    
 
 
 #def getParameters(req):
@@ -100,7 +100,7 @@ def makeWebhookResult(data):
     diningHall = "Ikenberry"
     entrees = "Polenta with Roasted Vegetables , Macaroni & Cheeze"
     
-    speech = diningHall + " is serving " + entrees + data
+    speech = diningHall + " is serving " + entrees
 
     print("Response:")
     print(speech)
