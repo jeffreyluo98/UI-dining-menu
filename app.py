@@ -69,8 +69,8 @@ def makeYqlQuery(req):
 
 
 def makeWebhookResult(data):
-    location = Ikenberry
-    speech = location + "is serving " + data
+    location = "Ikenberry"
+    speech = location + "is serving "
 
     print("Response:")
     print(speech)
