@@ -29,6 +29,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+import datetime
+
 # Flask app should start in global layout
 app = Flask(__name__)
 
@@ -48,58 +50,64 @@ def webhook():
     r.headers['Content-Type'] = 'application/json'
     return r
 
-
 def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
+    if req.get("result").get("action") != "menuRequest":
         return {}
     baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
+    parameters = getParameters(req)
+    if parameters is None:
         return {}
-    yql_url = baseurl + urlencode({'q': yql_query}) + "&format=json"
-    result = urlopen(yql_url).read()
-    data = json.loads(result)
+    data = compileData()
+    
+    data = "a"
     res = makeWebhookResult(data)
     return res
 
-
-def makeYqlQuery(req):
+# Getting parameters from request.
+# Returns [date, diningHall, mealPeriod]
+def getParameters(req):
     result = req.get("result")
     parameters = result.get("parameters")
-    city = parameters.get("geo-city")
-    if city is None:
-        return None
+    date = parameters.get("date")
+    diningHall = parameters.get("dining-hall")
+    mealPeriod = parameters.get("meal-period")
+    if mealPeriod is None:
+        mealPeriod = "lunch"
+    if date is None:
+        date = datetime.now().strftime('%Y-%m-%d')
+    
+    return [date, diningHall, mealPeriod]
 
-    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+def compileData():
+    url = "http://housing.illinois.edu/Dining/Menus/Dining-Halls"
+    request = urllib.request.Request(url)
+    ret = []
+    stri = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
+    response = urllib.request.urlopen(request)
+    data = response.read()
+    data = data.decode('utf-8')
 
+    pattern = re.compile(stri, re.DOTALL)
+    items = re.findall(pattern, data)
+    for item in items:
+        mealPeriod = item[0].lower()
+        dateArray = item[1].split('/')
+        date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
+        cat = item[2]
+        menu = " ".join(item[3].split())
+        ret.append([date, mealPeriod, cat, menu])
+    return ret
 
 def makeWebhookResult(data):
-    query = data.get('query')
-    if query is None:
+    if data is None:
         return {}
-
-    result = query.get('results')
-    if result is None:
-        return {}
-
-    channel = result.get('channel')
-    if channel is None:
-        return {}
-
-    item = channel.get('item')
-    location = channel.get('location')
-    units = channel.get('units')
-    if (location is None) or (item is None) or (units is None):
-        return {}
-
-    condition = item.get('condition')
-    if condition is None:
-        return {}
+    
+    diningHall = "ikenberry"
+    entrees = "Spinach Artichoke Pizza , Sausage Pizza , Three Cheese Pizza"
 
     # print(json.dumps(item, indent=4))
 
-    speech = "Today the weather in " + location.get('city') + ": " + condition.get('text') + \
-             ", And the temperature is " + condition.get('temp') + " " + units.get('temperature')
+    speech = diningHall + " is serving " + entrees
 
     print("Response:")
     print(speech)
