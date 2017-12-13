@@ -24,7 +24,7 @@ from urllib.error import HTTPError
 import json
 import os
 import urllib.request
-import re, requests, datetime
+import re, requests, datetime, random
 
 from flask import Flask
 from flask import request
@@ -109,32 +109,44 @@ def getMenu(req):
 
     pattern = re.compile(filter_str, re.DOTALL)
     items = re.findall(pattern, web_data)
-    menu = ''
+    menu = []
     for item in items:
         this_meal_period = item[0].lower()
         if this_meal_period == 'brunch':
             this_meal_period = 'lunch'
         elif this_meal_period == 'specialty dinner':
             this_meal_period = 'dinner'
-        # dateArray = item[1].split('/')
-        # date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
-        # service_unit = item[2]
         entrees = " ".join(item[2].split())
-        ret.append([this_meal_period, entrees])
+        entrees = re.split(r"\s,\s*", entrees)
         if this_meal_period == mealPeriod:
-            menu += entrees + ". "
+            menu += entrees
     return [diningHall, menu]
 
 
 def makeWebhookResult(output):
-    speech = output[0] + " is serving " + output[1]
+    diningHall = output[0]
+    menu = output[1]
+    if len(menu) > 8:
+        speechMenu = ", ".join(random.sample(set(menu), 8))
+    else:
+        speechMenu = ", ".join(menu)
+    menu = ", ".join(menu)
+
+    respArray = []
+    respArray += [diningHall + ' is serving ']
+    respArray += ['Entrees served at ' + diningHall + " include "]
+    respArray += ['On ' + diningHall + "'s menu, there is "]
+    resp = respArray[random.randint(0, 2)]
+
+    speech = resp + speechMenu + "."
+    displayText = resp + menu + "."
 
     print("Response:")
     print(speech)
 
     return {
         "speech": speech,
-        "displayText": speech,
+        "displayText": displayText,
         # "data": data,
         # "contextOut": [],
         "source": "apiai-weather-webhook-sample"
