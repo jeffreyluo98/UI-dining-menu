@@ -25,6 +25,7 @@ import json
 import os
 import re
 import urllib.request
+import requests
 
 from flask import Flask
 from flask import request
@@ -52,48 +53,66 @@ def webhook():
 
 def processRequest(req):
     if req.get("result").get("action") != "menuRequest":
-        return {}
-    url = "http://housing.illinois.edu/Dining/Menus/Dining-Halls"
-    request = urllib.request.Request(url)
-    ret = []
-    retTxt = []
-    stri = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
-    response = urllib.request.urlopen(request)
-    webData = response.read()
-    webData = webData.decode('utf-8')
-    pattern = re.compile(stri, re.DOTALL)
-    items = re.findall(pattern, webData)
-    for item in items:
-        mealPeriod = item[0].lower()
-        dateArray = item[1].split('/')
-        date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
-        cat = item[2]
-        menu = " ".join(item[3].split())
-        ret.append([date, mealPeriod, cat, menu])
-    entrees = ""
-    for one in ret:
-        if one[1] == "lunch" and one[2] == "Entrees":
-            entrees += one[3] + ". " 
+        return
     
-    diningHall = getParameters(req)
-    
-    data = [diningHall, entrees]
-    res = makeWebhookResult(data)
+    output = getMenu(req)
+    res = makeWebhookResult(output)
     return res
 
 
-def getParameters(req):
+def getMenu(req):
+    
     result = req.get("result")
     parameters = result.get("parameters")
     date = parameters.get("date")
     diningHall = parameters.get("dining-hall")
     mealPeriod = parameters.get("meal-period")
 
-    return diningHall
+    dateArray = date.split('-')
+    date = "/".join([dateArray[1], dateArray[2], dateArray[0]])
+    print(date)
+
+    if diningHall == 'Ikenberry':
+        diningHallValue = "Don's Chophouse Serving, Gregory Drive Diner Serving, Hortensia's Serving, Penne Lane Serving, Prairie Fire Serving, Soytainly Serving, Euclid Street Deli Serving, Baked Expectations Serving, Better Burger IKE Serving, Neo Soul Serving"
+    elif diningHall == 'PAR':
+        diningHallValue = "Abbondante Serving, Arugula's Serving, La Avenida Serving, Panini Bar, Provolone Serving, Sky Garden Serving, Better Burger Serving"
+    else:
+        diningHallValue = diningHall + ' Serving'
+    payload = {'pagebody_0$txtServingDate': date,
+               'pagebody_0$ddlLocations': diningHallValue,
+               'pagebody_0$btnSubmit': 'Select',
+               '__VIEWSTATE': '/wEPDwUKMTMyMzQxOTk2Ng8WAh4TVmFsaWRhdGVSZXF1ZXN0TW9kZQIBFgICAg9kFgJmD2QWAmYPZBYCAgEQZGQWBAIFDxBkDxYGZgIBAgICAwIEAgUWBhAFC0J1c2V5LUV2YW5zBRNCdXNleS1FdmFucyBTZXJ2aW5nZxAFA0ZBUgULRkFSIFNlcnZpbmdnEAUJSWtlbmJlcnJ5BesBRG9uJ3MgQ2hvcGhvdXNlIFNlcnZpbmcsIEdyZWdvcnkgRHJpdmUgRGluZXIgU2VydmluZywgSG9ydGVuc2lhJ3MgU2VydmluZywgUGVubmUgTGFuZSBTZXJ2aW5nLCBQcmFpcmllIEZpcmUgU2VydmluZywgU295dGFpbmx5IFNlcnZpbmcsIEV1Y2xpZCBTdHJlZXQgRGVsaSBTZXJ2aW5nLCBCYWtlZCBFeHBlY3RhdGlvbnMgU2VydmluZywgQmV0dGVyIEJ1cmdlciBJS0UgU2VydmluZywgTmVvIFNvdWwgU2VydmluZ2cQBQNJU1IFC0lTUiBTZXJ2aW5nZxAFA0xBUgULTEFSIFNlcnZpbmdnEAUDUEFSBYMBQWJib25kYW50ZSBTZXJ2aW5nLCBBcnVndWxhJ3MgU2VydmluZywgTGEgQXZlbmlkYSBTZXJ2aW5nLCBQYW5pbmkgQmFyLCBQcm92b2xvbmUgU2VydmluZywgU2t5IEdhcmRlbiBTZXJ2aW5nLCBCZXR0ZXIgQnVyZ2VyIFNlcnZpbmdnZGQCCw9kFgJmD2QWAmYPZBYCAgEPFgIeC18hSXRlbUNvdW50AgkWEmYPZBYCZg8VAyovL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9Ub29scy9NeUhvdXNpbmcGb3JhbmdlCU1ZSE9VU0lOR2QCAQ9kFgJmDxUDOC8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L0Fib3V0VXMvc3RhZmYtZW1wbG95bWVudC9Kb2JzBGJsdWUESk9CU2QCAg9kFgJmDxUDPS8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L1Jlc291cmNlcy9yZXNpZGVuY2UtaGFsbC1saWJyYXJpZXMGeWVsbG93CUxJQlJBUklFU2QCAw9kFgJmDxUDLy8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L1Jlc291cmNlcy9UZWNobm9sb2d5BWdyZWVuClRFQ0hOT0xPR1lkAgQPZBYCZg8VAyYvL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9tYWludGVuYW5jZQZwdXJwbGULTUFJTlRFTkFOQ0VkAgUPZBYCZg8VAyxodHRwczovL3dlYi5ob3VzaW5nLmlsbGlub2lzLmVkdS9NeUJhbGFuY2VzLwNyZWQLSUxMSU5JIENBU0hkAgYPZBYCZg8VAzEvL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9SZXNvdXJjZXMvR2V0LUludm9sdmVkCmxpZ2h0LWJsdWUMR0VUIElOVk9MVkVEZAIHD2QWAmYPFQMoLy93d3cuaG91c2luZy5pbGxpbm9pcy5lZHUvVG9vbHMvbW92ZS1pbgtsaWdodC1ncmVlbgdNT1ZFLUlOZAIID2QWAmYPFQMkLy93d3cuaG91c2luZy5pbGxpbm9pcy5lZHUvYXBwbHktbm93CWRhcmstYmx1ZQlBcHBseSBOb3dkZM4Nfyq3wnFCV5FSr3SK1LwFjXv0zIrtghi3tNeHp6Em',
+               '__VIEWSTATEGENERATOR': '6C13C3D4',
+               '__EVENTVALIDATION': '/wEdAAndPAajAdsmwoOZ/gfzhOZ0WSHE2RXo8/7qyel4z+uwDmS/tYTfV6F4P9ytm+uBq3Oh9DmNqfhtvp0A+P2a1qVCeMEESUkmlwAnmRGbejy/kVSnCSYCDKMPW6tER5EH5YTU/RMGCO28nRolFRITlJPZ7+Uf8k9kfSWslLyENoaAtZw6htKKHrAZ0Z/A8f+XAckjJ/hf3kan4/T6O8WK/46pAJZsdE5yecCiz5zRwcmDrw=='
+                }
+    url = 'http://www.housing.illinois.edu/dining/menus/dining-Halls'
+    r = requests.post(url, data=payload)
+    web_data = r.text
+
+    ret = []
+    filter_str = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>Entrees</strong>(.*?)<br />.*?'
+
+    pattern = re.compile(filter_str, re.DOTALL)
+    items = re.findall(pattern, web_data)
+    menu = ''
+    for item in items:
+        this_meal_period = item[0].lower()
+        if this_meal_period == 'brunch':
+            this_meal_period = 'lunch'
+        elif this_meal_period == 'specialty dinner':
+            this_meal_period = 'dinner'
+        # dateArray = item[1].split('/')
+        # date = "-".join([dateArray[2], dateArray[0], dateArray[1]])
+        # service_unit = item[2]
+        entrees = " ".join(item[2].split())
+        ret.append([this_meal_period, entrees])
+        if this_meal_period == mealPeriod:
+            menu += entrees + ". "
+    return [diningHall, menu]
 
 
-def makeWebhookResult(data):
-    speech = data[0] + " is serving " + data[1]
+def makeWebhookResult(output):
+    speech = output[0] + " is serving " + output[1]
 
     print("Response:")
     print(speech)
