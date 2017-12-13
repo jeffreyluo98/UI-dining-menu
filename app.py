@@ -70,9 +70,9 @@ def getMenu(req):
     diningHall = parameters.get("dining-hall")
     mealPeriod = parameters.get("meal-period")
     
-    if date is None:
+    if date == "":
         date = datetime.now().strftime('%Y-%m-%d')
-    if mealPeriod is None:
+    if mealPeriod == "":
             currentHour = datetime.now().hour
             if currentHour <= 10:
                 mealPeriod = 'breakfast'
