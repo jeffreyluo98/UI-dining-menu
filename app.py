@@ -51,7 +51,7 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "menuRequest":
+    if  req.get("result").get("action").find("menuRequest") == -1 :
         return
     
     output = getMenu(req)
@@ -63,9 +63,15 @@ def getMenu(req):
     
     result = req.get("result")
     parameters = result.get("parameters")
-    date = parameters.get("date")
-    diningHall = parameters.get("dining-hall")
-    mealPeriod = parameters.get("meal-period")
+    
+    if result.get("action") == "menuRequest.menuRequest-more":
+        date = parameters.get("date.original")
+        diningHall = parameters.get("dining-hall.original")
+        mealPeriod = parameters.get("meal-period.original")
+    else:
+        date = parameters.get("date")
+        diningHall = parameters.get("dining-hall")
+        mealPeriod = parameters.get("meal-period")
     
     if mealPeriod == "":
             currentHour = datetime.datetime.now().hour
