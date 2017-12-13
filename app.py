@@ -75,13 +75,12 @@ def getMenu(req):
                 mealPeriod = 'lunch'
             elif currentHour <= 15:
                 mealPeriod = 'light lunch'
-            elif currentHour <= 20:
-                mealPeriod = 'dinner'
-            elif date == "":
+            elif currentHour > 20 and date == "":
                 mealPeriod = 'breakfast'
-                date = datetime.date.today() + datetime.timedelta(days=1)
+                date = str(datetime.date.today() + datetime.timedelta(days=1))
+            else: mealPeriod = 'dinner'
     if date == "":
-        date = datetime.date.today()
+        date = str(datetime.date.today())
 
 
     dateArray = date.split('-')
