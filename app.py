@@ -90,7 +90,7 @@ def getMenu(req):
     dateArray = date.split('-')
     date = "/".join([dateArray[1], dateArray[2], dateArray[0]])
 
-        if diningHall == 'Ikenberry':
+    if diningHall == 'Ikenberry':
         diningHallValue = "Don's Chophouse Serving, Gregory Drive Diner Serving, Hortensia's Serving, Penne Lane Serving, Prairie Fire Serving, Soytainly Serving, Euclid Street Deli Serving, Baked Expectations Serving, Better Burger IKE Serving, Neo Soul Serving"
     elif diningHall == 'PAR':
         diningHallValue = "Abbondante Serving, Arugula's Serving, La Avenida Serving, Panini Bar, Provolone Serving, Sky Garden Serving, Better Burger Serving"
