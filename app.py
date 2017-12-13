@@ -89,7 +89,6 @@ def getMenu(req):
 
     dateArray = date.split('-')
     date = "/".join([dateArray[1], dateArray[2], dateArray[0]])
-    print(date)
 
     if diningHall == 'Ikenberry':
         diningHallValue = "Don's Chophouse Serving, Gregory Drive Diner Serving, Hortensia's Serving, Penne Lane Serving, Prairie Fire Serving, Soytainly Serving, Euclid Street Deli Serving, Baked Expectations Serving, Better Burger IKE Serving, Neo Soul Serving"
@@ -103,12 +102,11 @@ def getMenu(req):
                '__VIEWSTATE': '/wEPDwUKMTMyMzQxOTk2Ng8WAh4TVmFsaWRhdGVSZXF1ZXN0TW9kZQIBFgICAg9kFgJmD2QWAmYPZBYCAgEQZGQWBAIFDxBkDxYGZgIBAgICAwIEAgUWBhAFC0J1c2V5LUV2YW5zBRNCdXNleS1FdmFucyBTZXJ2aW5nZxAFA0ZBUgULRkFSIFNlcnZpbmdnEAUJSWtlbmJlcnJ5BesBRG9uJ3MgQ2hvcGhvdXNlIFNlcnZpbmcsIEdyZWdvcnkgRHJpdmUgRGluZXIgU2VydmluZywgSG9ydGVuc2lhJ3MgU2VydmluZywgUGVubmUgTGFuZSBTZXJ2aW5nLCBQcmFpcmllIEZpcmUgU2VydmluZywgU295dGFpbmx5IFNlcnZpbmcsIEV1Y2xpZCBTdHJlZXQgRGVsaSBTZXJ2aW5nLCBCYWtlZCBFeHBlY3RhdGlvbnMgU2VydmluZywgQmV0dGVyIEJ1cmdlciBJS0UgU2VydmluZywgTmVvIFNvdWwgU2VydmluZ2cQBQNJU1IFC0lTUiBTZXJ2aW5nZxAFA0xBUgULTEFSIFNlcnZpbmdnEAUDUEFSBYMBQWJib25kYW50ZSBTZXJ2aW5nLCBBcnVndWxhJ3MgU2VydmluZywgTGEgQXZlbmlkYSBTZXJ2aW5nLCBQYW5pbmkgQmFyLCBQcm92b2xvbmUgU2VydmluZywgU2t5IEdhcmRlbiBTZXJ2aW5nLCBCZXR0ZXIgQnVyZ2VyIFNlcnZpbmdnZGQCCw9kFgJmD2QWAmYPZBYCAgEPFgIeC18hSXRlbUNvdW50AgkWEmYPZBYCZg8VAyovL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9Ub29scy9NeUhvdXNpbmcGb3JhbmdlCU1ZSE9VU0lOR2QCAQ9kFgJmDxUDOC8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L0Fib3V0VXMvc3RhZmYtZW1wbG95bWVudC9Kb2JzBGJsdWUESk9CU2QCAg9kFgJmDxUDPS8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L1Jlc291cmNlcy9yZXNpZGVuY2UtaGFsbC1saWJyYXJpZXMGeWVsbG93CUxJQlJBUklFU2QCAw9kFgJmDxUDLy8vd3d3LmhvdXNpbmcuaWxsaW5vaXMuZWR1L1Jlc291cmNlcy9UZWNobm9sb2d5BWdyZWVuClRFQ0hOT0xPR1lkAgQPZBYCZg8VAyYvL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9tYWludGVuYW5jZQZwdXJwbGULTUFJTlRFTkFOQ0VkAgUPZBYCZg8VAyxodHRwczovL3dlYi5ob3VzaW5nLmlsbGlub2lzLmVkdS9NeUJhbGFuY2VzLwNyZWQLSUxMSU5JIENBU0hkAgYPZBYCZg8VAzEvL3d3dy5ob3VzaW5nLmlsbGlub2lzLmVkdS9SZXNvdXJjZXMvR2V0LUludm9sdmVkCmxpZ2h0LWJsdWUMR0VUIElOVk9MVkVEZAIHD2QWAmYPFQMoLy93d3cuaG91c2luZy5pbGxpbm9pcy5lZHUvVG9vbHMvbW92ZS1pbgtsaWdodC1ncmVlbgdNT1ZFLUlOZAIID2QWAmYPFQMkLy93d3cuaG91c2luZy5pbGxpbm9pcy5lZHUvYXBwbHktbm93CWRhcmstYmx1ZQlBcHBseSBOb3dkZM4Nfyq3wnFCV5FSr3SK1LwFjXv0zIrtghi3tNeHp6Em',
                '__VIEWSTATEGENERATOR': '6C13C3D4',
                '__EVENTVALIDATION': '/wEdAAndPAajAdsmwoOZ/gfzhOZ0WSHE2RXo8/7qyel4z+uwDmS/tYTfV6F4P9ytm+uBq3Oh9DmNqfhtvp0A+P2a1qVCeMEESUkmlwAnmRGbejy/kVSnCSYCDKMPW6tER5EH5YTU/RMGCO28nRolFRITlJPZ7+Uf8k9kfSWslLyENoaAtZw6htKKHrAZ0Z/A8f+XAckjJ/hf3kan4/T6O8WK/46pAJZsdE5yecCiz5zRwcmDrw=='
-                }
+               }
     url = 'http://www.housing.illinois.edu/dining/menus/dining-Halls'
     r = requests.post(url, data=payload)
     web_data = r.text
 
-    ret = []
     filter_str = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
 
     pattern = re.compile(filter_str, re.DOTALL)
@@ -140,7 +138,6 @@ def makeWebhookResult(output):
     else:
         speechMenu = ", ".join(menu)
     menu = ", ".join(menu)
-
     respArray = []
     respArray += [diningHall + ' is serving ']
     respArray += ['Entrees served at ' + diningHall + " include "]
