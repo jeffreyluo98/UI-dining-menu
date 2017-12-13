@@ -23,15 +23,12 @@ from urllib.error import HTTPError
 
 import json
 import os
-import re
 import urllib.request
-import requests
+import re, requests, datetime
 
 from flask import Flask
 from flask import request
 from flask import make_response
-
-from datetime import datetime
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -70,18 +67,21 @@ def getMenu(req):
     diningHall = parameters.get("dining-hall")
     mealPeriod = parameters.get("meal-period")
     
-    if date == "":
-        date = datetime.now().strftime('%Y-%m-%d')
     if mealPeriod == "":
-            currentHour = datetime.now().hour
+            currentHour = datetime.datetime.now().hour
             if currentHour <= 10:
                 mealPeriod = 'breakfast'
             elif currentHour <= 13:
                 mealPeriod = 'lunch'
             elif currentHour <= 15:
                 mealPeriod = 'light lunch'
-            else:
+            elif currentHour <= 20:
                 mealPeriod = 'dinner'
+            elif date == "":
+                mealPeriod = 'breakfast'
+                date = datetime.date.today() + datetime.timedelta(days=1)
+    if date == "":
+        date = datetime.date.today()
 
 
     dateArray = date.split('-')
