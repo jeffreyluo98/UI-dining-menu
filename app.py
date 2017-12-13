@@ -126,24 +126,20 @@ def getMenu(req):
 def makeWebhookResult(output):
     diningHall = output[0]
     menu = output[1]
-    if diningHall == "" or menu == ""
-        speech = "Sorry. Something went wrong."
-        displayText = speech
+    if len(menu) > 8:
+        speechMenu = ", ".join(random.sample(set(menu), 8))
     else:
-        if len(menu) > 8:
-            speechMenu = ", ".join(random.sample(set(menu), 8))
-        else:
-            speechMenu = ", ".join(menu)
-        menu = ", ".join(menu)
+        speechMenu = ", ".join(menu)
+    menu = ", ".join(menu)
 
-        respArray = []
-        respArray += [diningHall + ' is serving ']
-        respArray += ['Entrees served at ' + diningHall + " include "]
-        respArray += ['On ' + diningHall + "'s menu, there is "]
-        resp = respArray[random.randint(0, 2)]
+    respArray = []
+    respArray += [diningHall + ' is serving ']
+    respArray += ['Entrees served at ' + diningHall + " include "]
+    respArray += ['On ' + diningHall + "'s menu, there is "]
+    resp = respArray[random.randint(0, 2)]
 
-        speech = resp + speechMenu + "."
-        displayText = resp + menu + "."
+    speech = resp + speechMenu + "."
+    displayText = resp + menu + "."
 
     print("Response:")
     print(speech)
