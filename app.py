@@ -31,6 +31,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+from datetime import datetime
+
 # Flask app should start in global layout
 app = Flask(__name__)
 
@@ -67,6 +69,20 @@ def getMenu(req):
     date = parameters.get("date")
     diningHall = parameters.get("dining-hall")
     mealPeriod = parameters.get("meal-period")
+    
+    if date is None:
+        date = datetime.now().strftime('%Y-%m-%d')
+    if mealPeriod is None:
+            currentHour = datetime.now().hour
+            if currentHour <= 10:
+                mealPeriod = 'breakfast'
+            elif currentHour <= 13:
+                mealPeriod = 'lunch'
+            elif currentHour <= 15:
+                mealPeriod = 'light lunch'
+            else:
+                mealPeriod = 'dinner'
+
 
     dateArray = date.split('-')
     date = "/".join([dateArray[1], dateArray[2], dateArray[0]])
