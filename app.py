@@ -64,7 +64,7 @@ def getMenu(req):
     result = req.get("result")
     parameters = result.get("parameters")
     
-    if result.get("action") == "menuRequest.menuRequest-more":
+    if result.get("contexts").get("name") == "menurequest-followup":
         date = parameters.get("date.original")
         diningHall = parameters.get("dining-hall.original")
         mealPeriod = parameters.get("meal-period.original")
