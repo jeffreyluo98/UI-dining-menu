@@ -128,6 +128,7 @@ def makeWebhookResult(output):
     menu = output[1]
     if diningHall == "" or menu == ""
         speech = "Sorry. Something went wrong."
+        displayText = speech
     else:
         if len(menu) > 8:
             speechMenu = ", ".join(random.sample(set(menu), 8))
