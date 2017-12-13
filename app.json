@@ -1,7 +1,6 @@
 {
-  "name": "API.AI webhook demonstration",
-  "description": "API.AI webhook demonstration",
-  "repository": "https://github.com/api-ai/apiai-weather-webhook-sample",
-  "logo": "http://xvir.github.io/img/apiai.png",
+  "name": "UI Dining",
+  "description": "Voice assistant for checking dining hall schedule",
+  "repository": "https://github.com/jeffreyluo98/UI-dining-menu",
   "keywords": ["api.ai", "natural language"]
 }
