@@ -90,7 +90,7 @@ def getMenu(req):
     dateArray = date.split('-')
     date = "/".join([dateArray[1], dateArray[2], dateArray[0]])
 
-    if diningHall == 'Ikenberry':
+        if diningHall == 'Ikenberry':
         diningHallValue = "Don's Chophouse Serving, Gregory Drive Diner Serving, Hortensia's Serving, Penne Lane Serving, Prairie Fire Serving, Soytainly Serving, Euclid Street Deli Serving, Baked Expectations Serving, Better Burger IKE Serving, Neo Soul Serving"
     elif diningHall == 'PAR':
         diningHallValue = "Abbondante Serving, Arugula's Serving, La Avenida Serving, Panini Bar, Provolone Serving, Sky Garden Serving, Better Burger Serving"
@@ -121,7 +121,7 @@ def getMenu(req):
         this_cat = item[2].lower()
         entrees = " ".join(item[3].split())
         entrees = re.split(r"\s*,\s*", entrees)
-        if cat == "default":
+        if cat == "all":
             if this_meal_period == mealPeriod and this_cat in ['entrees', 'vegetables', 'salads & salad bar', 'soups', 'breads']:
                 menu += entrees
         else:
@@ -134,18 +134,18 @@ def makeWebhookResult(output):
     diningHall = output[0]
     menu = output[1]
     if len(menu) > 8:
-        speechMenu = ", ".join(random.sample(set(menu), 8))
+        speechMenu = ", ".join(menu)
     else:
         speechMenu = ", ".join(menu)
     menu = ", ".join(menu)
+
     respArray = []
     respArray += [diningHall + ' is serving ']
     respArray += ['Entrees served at ' + diningHall + " include "]
-    respArray += ['On ' + diningHall + "'s menu, there is "]
+    respArray += ['On ' + diningHall + "'s menu, we have "]
     resp = respArray[random.randint(0, 2)]
 
     speech = resp + speechMenu + "."
-    displayText = resp + menu + "."
 
     print("Response:")
     print(speech)
