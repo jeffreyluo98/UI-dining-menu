@@ -1,6 +1,7 @@
-# Api.ai - sample webhook implementation in Python
+# UIUC Dining bot 
 
-This is a really simple webhook implementation that gets Api.ai classification JSON (i.e. a JSON output of Api.ai /query endpoint) and returns a fulfillment response.
+This is a CS125 project created by Zhili Luo (zhilil2) and Zhengsan Chang (zc17).
+Based on Weather Webhook Fulfillment Sample by DialogFlow(api.ai)
 
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
@@ -8,14 +9,14 @@ More info about Api.ai webhooks could be found here:
 # Deploy to:
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-# What does the service do?
-It's a weather information fulfillment service that uses [Yahoo! Weather API](https://developer.yahoo.com/weather/).
-The services takes the `geo-city` parameter from the action, performs geolocation for the city and requests weather information from Yahoo! Weather public API. 
+# What does it do?
+It is a simple AI program that can
+automatically fetch the data of UI dining halls’ menu and
+answer certain questions. Let’s first demonstrate its
+function!
 
-The service packs the result in the Api.ai webhook-compatible response JSON and returns it to Api.ai.
-
-## How to make contributions?
-Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md).
+## How does it Work?
+First we used DialogFlow to create natural dialogs and identify what the user wants. We send the parameters through webhook as a JSON request to our web application on Heroku. Heroku App will get this request, submit a form on the UIUC dining website, then fetch data from html and process the request. It will create an appropriate response and send it back to DialogFlow.
 
 ## License
 See [LICENSE](LICENSE).
