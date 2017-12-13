@@ -66,6 +66,10 @@ def getMenu(req):
     date = parameters.get("date")
     diningHall = parameters.get("dining-hall")
     mealPeriod = parameters.get("meal-period")
+    cat = parameter.get("category")
+    
+    if cat == "":
+        cat = "default"
     
     if mealPeriod == "":
             currentHour = datetime.datetime.now().hour
@@ -105,7 +109,7 @@ def getMenu(req):
     web_data = r.text
 
     ret = []
-    filter_str = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>Entrees</strong>(.*?)<br />.*?'
+    filter_str = r'<h4.*?diningmealperiod">(.*?) - (.*?)</h4>.*?<strong>(.*?)</strong>(.*?)<br />.*?'
 
     pattern = re.compile(filter_str, re.DOTALL)
     items = re.findall(pattern, web_data)
@@ -116,10 +120,15 @@ def getMenu(req):
             this_meal_period = 'lunch'
         elif this_meal_period == 'specialty dinner':
             this_meal_period = 'dinner'
-        entrees = " ".join(item[2].split())
-        entrees = re.split(r"\s,\s*", entrees)
-        if this_meal_period == mealPeriod:
-            menu += entrees
+        this_cat = item[2].lower()
+        entrees = " ".join(item[3].split())
+        entrees = re.split(r"\s*,\s*", entrees)
+        if cat == "default":
+            if this_meal_period == mealPeriod and this_cat in ['entrees', 'vegetables', 'salads & salad bar', 'soups', 'breads']:
+                menu += entrees
+        else:
+            if this_meal_period == mealPeriod and this_cat == cat:
+                menu += entrees
     return [diningHall, menu]
 
 
