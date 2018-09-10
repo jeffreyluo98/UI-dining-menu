@@ -1,6 +1,6 @@
 # UIUC Dining bot 
 
-This is a CS125 project created by Zhili Luo (zhilil2).
+This is a CS125 project created by Zhili Luo (zhilil2) and Zhengsan Chang (zc17).
 Based on Weather Webhook Fulfillment Sample by DialogFlow(api.ai)
 
 More info about Api.ai webhooks could be found here:
